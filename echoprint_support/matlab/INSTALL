@@ -1,0 +1,31 @@
+echonewfp-2011-06-04 can be run directly from its source directory
+
+An important note about mex
+===========================
+
+If you are using an older version of Matlab then the default mex
+configuation might not work and you might need to specify various
+special options so that it picks up the system compiler.
+
+For example, if to compile C files with mex when using Matlab 2009b on
+Mac OS X 10.7 Lion, you may need to customize the CC, SDKROOT and
+MACOSX_DEPLOYMENT_TARGET options corresponding to the maci64
+architecture:
+
+CC='gcc'
+SDKROOT='/Developer/SDKs/MacOSX10.7.sdk'
+MACOSX_DEPLOYMENT_TARGET='10.7'
+
+A mex options file including these customizations, which is just a
+modified vesion of the standard gccopts.sh, is included in this
+distribution as gcc-lion-opts.sh.  Copy this file into
+/Applications/MATLAB_R2009b.app/bin and then instruct mex to use these
+options with
+
+>> mex -setup
+
+which will copy the options to ~/.matlab/R2009b/mexopts.sh whence they
+will be used as defaults, or on a file-by-file basis with
+
+>> mex -f /Applications/MATLAB_R2009b.app/bin/gcc-lion-opts.sh filename.c
+

@@ -1,0 +1,146 @@
+2011-04-17  Basic benchmarking of varying the fan-out context size
+
+numdts = 2 context = 2
+Added 59 tracks in 778.315 sec (proc time = 0.053947 s per sec of audio)
+263200 hashes for 14427.4402 s = 18.243 hash/sec on avg
+Ran 59 queries in 34.6409 sec (proc time = 0.018916 s / sec audio)
+53 / 59 true matches with < 20 hits
+17 / 59 true/false ratios < 2
+
+numdts = 2 context = 3
+Added 59 tracks in 629.4973 sec (proc time = 0.043711 s per sec of audio)
+788007 hashes for 14401.2249 s = 54.7181 hash/sec on avg
+Ran 59 queries in 37.6558 sec (proc time = 0.020562 s / sec audio)
+35 / 59 true matches with < 20 hits
+15 / 59 true/false ratios < 2
+
+numdts = 2 context = 4
+Added 59 tracks in 612.6358 sec (proc time = 0.042619 s per sec of audio)
+1572828 hashes for 14374.847 s = 109.4153 hash/sec on avg
+Ran 59 queries in 36.9592 sec (proc time = 0.020182 s / sec audio)
+25 / 59 true matches with < 20 hits
+13 / 59 true/false ratios < 2
+
+numdts = 2 context = 5
+Added 59 tracks in 605.0359 sec (proc time = 0.042164 s per sec of audio)
+2616070 hashes for 14349.4211 s = 182.3119 hash/sec on avg
+Ran 59 queries in 43.2152 sec (proc time = 0.023598 s / sec audio)
+18 / 59 true matches with < 20 hits
+8 / 59 true/false ratios < 2
+
+numdts = 2 context = 6
+Added 59 tracks in 602.3202 sec (proc time = 0.042043 s per sec of audio)
+3916140 hashes for 14326.2244 s = 273.3546 hash/sec on avg
+Ran 59 queries in 55.1986 sec (proc time = 0.030141 s / sec audio)
+14 / 59 true matches with < 20 hits
+6 / 59 true/false ratios < 2
+
+
+To try:
+ - how is it without whiten?
+ - varying the dt quantization
+ - measure utilities for different subbands
+ - implement minimum separation time?
+ - varying the onset density per band
+
+
+(4,2) without whiten:
+numdts = 2 context = 4
+Added 59 tracks in 338.4641 sec (proc time = 0.023544 s per sec of audio)
+1567404 hashes for 14376.1009 s = 109.0285 hash/sec on avg
+Ran 59 queries in 19.8698 sec (proc time = 0.01085 s / sec audio)
+27 / 59 true matches with < 20 hits
+16 / 59 true/false ratios < 2
+ - twice as fast 27 > 25, 16 > 13
+
+
+2011-04-18
+
+Looking at persistent weak-performing files
+ - 27081 - soft, dynamic, romantic piano - query has very low SNR
+ - 27974 - just 19 s long - just 6 chords - ear training sound example
+ - 40806 - baroque harpsichord + violin - no percussion
+ - 49887 - query is slow intro - sustained strings, choir, piano - no onsets
+ - 6031  - just 4 sustained sine tones + noise - not a real example
+ - 6770  - sounds fine, actually, if very repetitive ??
+ - 7387  - weird, low-pitched, scratchy cello solo
+
+2011-05-28
+ - adapted to work better on clean os test
+ - 6Z1P onset smooth+enhance filter
+ - double the dtres to 64/11025
+ - deadtime quadrupled to 128
+ - no whiten (to match EN)
+numdts = 2 context = 4
+Added 59 tracks in 546.5367 sec (proc time = 0.038343 s per sec of audio)
+840078 hashes for 14253.9407 s = 58.9365 hash/sec on avg
+Ran 59 queries in 20.0468 sec (proc time = 6.828e-06 s / sec audio)
+34 / 59 true matches with < 20 hits
+16 / 59 true/false ratios < 2
+
+ - with context_ref=2 and context_air=4
+Added 59 tracks in 422.4127 sec (proc time = 0.029417 s per sec of audio)
+141075 hashes for 14359.2432 s = 9.8247 hash/sec on avg
+Ran 59 queries in 16.7064 sec (proc time = 0.010554 s / sec audio)
+58 / 59 true matches with < 20 hits
+24 / 59 true/false ratios < 2
+ - with context_ref=3 and context_air=4
+Added 59 tracks in 435.8922 sec (proc time = 0.030464 s per sec of audio)
+421632 hashes for 14308.5308 s = 29.4672 hash/sec on avg
+Ran 59 queries in 17.321 sec (proc time = 0.010942 s / sec audio)
+43 / 59 true matches with < 20 hits
+20 / 59 true/false ratios < 2
+ - with both context_ref and context_air=3
+Added 59 tracks in 454.0112 sec (proc time = 0.03173 s per sec of audio)
+421632 hashes for 14308.5308 s = 29.4672 hash/sec on avg
+Ran 59 queries in 16.0282 sec (proc time = 0.0098326 s / sec audio)
+50 / 59 true matches with < 20 hits
+20 / 59 true/false ratios < 2
+ - using 2 * 4 * 16 pt STFT with 75% overlap (instead of time-domain blkg)
+Added 59 tracks in 1428.4424 sec (proc time = 0.4042 s per sec of audio)
+203724 hashes for 3534.0307 s = ??57.6464 hash/sec on avg
+Ran 59 queries in 42.5497 sec (proc time = 0.11082 s / sec audio)
+28 / 59 true matches with < 20 hits
+2 / 59 true/false ratios < 2
+
+2011-06-01
+ - fixed and/or incorporated bugs.
+   Now target is 1 onset/band/sec
+   dtres = 23.2 ms (256/11025)
+ - modified test_inairhash to use default settings for newfp_ota
+   (fanoutcontext 4 etc).
+Added 59 tracks in 3445.8866 sec (proc time = 0.24589 s per sec of audio)
+404262 hashes for 14013.9857 s = 28.847 hash/sec on avg
+Ran 59 queries in 38.8092 sec (proc time = 0.026871 s / sec audio)
+16 / 59 true matches with < 20 hits
+1 / 59 true/false ratios < 2 (only error is #28)
+
+2011-06-02
+ - oops, it was looking only in one of the 128bin FFT bands
+ - fixed to combine energy in blocks of 8, as specified
+ - doesn't change clean matching much
+ - OTA matching is still OK:  20-way test (dtres = 128/11025)
+single line:
+ Ran 20 queries in 7.2084 sec (proc time = 0.014445 s / sec audio)
+ 2 / 20 true matches with < 20 hits
+ 0 / 20 true/false ratios < 2
+8 lines combined:
+ Ran 20 queries in 7.6401 sec (proc time = 0.015466 s / sec audio)
+ 5 / 20 true matches with < 20 hits
+ 0 / 20 true/false ratios < 2
+ - actually not much to choose between them
+
+2011-06-03
+ - using FFT with proper 8-band integration
+Added 59 tracks in 1062.2088 sec (proc time = 0.07573 s per sec of audio)
+359850 hashes for 14026.2458 s = 25.6555 hash/sec on avg
+Ran 59 queries in 40.8268 sec (proc time = 0.029074 s / sec audio)
+15 / 59 true matches with < 20 hits
+7 / 59 true/false ratios < 2
+ - using complex QMF filterbank instead of FFT
+Added 59 tracks in 1035.4325 sec (proc time = 0.073848 s per sec of audio)
+359568 hashes for 14021.091 s = 25.6448 hash/sec on avg
+Ran 59 queries in 94.1083 sec (proc time = 0.066529 s / sec audio)
+17 / 59 true matches with < 20 hits
+11 / 59 true/false ratios < 2
+ - a little worse, but not enough to worry about ?!
